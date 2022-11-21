@@ -5,7 +5,10 @@ class Car:
         self.carLength = carLength
         self.fuel = fuel
         self.carName = carName
-        self.carFullPosition = carsFullPosition
+        self.carFullPosition = self.initializeCarPos()
+        self.gCost = 0
+        self.hCost = 0
+        self.parent = object
 
     def isHorizontal(self):
         return self.position == "Horizontal"
@@ -24,16 +27,35 @@ class Car:
               self.startPos, " and the car is ", self.position, " and has the length of ", self.carLength,
               " and its full part location is ", self.carFullPosition)
 
-    def getFullCarPosition(self):
+    def initializeCarPos(self):
         x = self.startPos[0]
         y = self.startPos[1]
         counter = 0
+        carFullPosition=[]
         if self.isHorizontal():
-            for i in range(self.carLength):
-                self.carFullPosition.append((x, y + counter))
-                counter = counter + 1
-        if self.isVertical():
-            for i in range(self.carLength):
-                self.carFullPosition.append((x + counter, y))
-                counter = counter + 1
+                for i in range(self.carLength):
+                    carFullPosition.append((x, y + counter))
+                    counter = counter + 1
+        elif self.isVertical():
+                for i in range(self.carLength):
+                    carFullPosition.append((x + counter, y))
+                    counter = counter + 1
+        return carFullPosition
+
+    def getFullCarPosition(self):
         return self.carFullPosition
+
+    def setStartPosition(self, position):
+        self.startPos = position
+
+    def setCarFullPosition(self, positions):
+        self.carFullPosition = positions
+
+    def setgCost(self, cost):
+        self.gCost = cost
+
+    def sethCost(self, cost):
+        self.hCost = cost
+
+    def setParent(self, car):
+        self.parent = car
