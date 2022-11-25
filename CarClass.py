@@ -1,61 +1,46 @@
 class Car:
-    def __init__(self, carName, position="", startPos=(), carLength=2, fuel=100, carsFullPosition=[]):
-        self.position = position
-        self.startPos = startPos
-        self.carLength = carLength
+    def __init__(self, name, orientation="", startingPosition=(), length=2, fuel=100):
+        self.orientation = orientation
+        self.startingPosition = startingPosition
+        self.length = length
         self.fuel = fuel
-        self.carName = carName
-        self.carFullPosition = self.initializeCarPos()
-        self.gCost = 0
-        self.hCost = 0
-        self.parent = object
+        self.name = name
+        self.allCarPositions = self.initializingCarPositions()
 
     def isHorizontal(self):
-        return self.position == "Horizontal"
+        return self.orientation == "Horizontal"
 
     def isVertical(self):
-        return self.position == "Vertical"
+        return self.orientation == "Vertical"
 
     def useFuel(self, amount):
-        self.fuel -= amount
+        self.fuel = self.fuel - amount
 
     def hasFuel(self):
         return self.fuel > 0
 
     def printCarInfo(self):
-        print("Car Name ", self.carName, " and it has a fuel of ", self.fuel, " and its start position is ",
-              self.startPos, " and the car is ", self.position, " and has the length of ", self.carLength,
-              " and its full part location is ", self.carFullPosition)
+        print("The car name is  ", self.name, " and its fuel is ", self.fuel, " and its start position is ",
+              self.startingPosition, " and the car orientation is  ", self.orientation, " and its length  ",
+              self.length, " and its full car location is ", self.allCarPositions)
 
-    def initializeCarPos(self):
-        x = self.startPos[0]
-        y = self.startPos[1]
-        counter = 0
-        carFullPosition=[]
+    def initializingCarPositions(self):
+        x = self.startingPosition[0]
+        y = self.startingPosition[1]
+        count = 0
+        CarPosition = []
         if self.isHorizontal():
-                for i in range(self.carLength):
-                    carFullPosition.append((x, y + counter))
-                    counter = counter + 1
+            for i in range(self.length):
+                CarPosition.append((x, y + count))
+                count = count + 1
         elif self.isVertical():
-                for i in range(self.carLength):
-                    carFullPosition.append((x + counter, y))
-                    counter = counter + 1
-        return carFullPosition
+            for i in range(self.length):
+                CarPosition.append((x + count, y))
+                count = count + 1
+        return CarPosition
 
-    def getFullCarPosition(self):
-        return self.carFullPosition
+    def ReturnAllCarPositions(self):
+        return self.allCarPositions
 
-    def setStartPosition(self, position):
-        self.startPos = position
-
-    def setCarFullPosition(self, positions):
-        self.carFullPosition = positions
-
-    def setgCost(self, cost):
-        self.gCost = cost
-
-    def sethCost(self, cost):
-        self.hCost = cost
-
-    def setParent(self, car):
-        self.parent = car
+    def setCarFullPosition(self, pos):
+        self.allCarPositions = pos
