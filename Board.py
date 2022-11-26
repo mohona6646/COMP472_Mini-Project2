@@ -1,8 +1,5 @@
-from Car import Car
-from typing import List
+from CarClass import Car
 import copy
-
-
 class Board:
 
     def __init__(self, puzzles):
@@ -12,6 +9,7 @@ class Board:
         self.cars = []
         self.parentsCar = {}
         self.MakingMatrix(puzzles)
+        self.movedCar = ""
 
     def clone(self):
         boardCopy = copy.deepcopy(self)
@@ -21,7 +19,7 @@ class Board:
         self.cars = cars
         return self.cars
 
-    def isGoalPos(self, car):
+    def isGoalPosition(self, car):
         if car not in self.cars:
             return True
         else:
@@ -29,7 +27,7 @@ class Board:
 
     def getCarName(self, name):
         for x in self.cars:
-            if x.carName == name:
+            if x.name == name:
                 return x
 
     def getCarNameAtLocation(self, x, y):
@@ -40,7 +38,7 @@ class Board:
             car = fuel[0]
             fuel_value = int(fuel[1:])
             carName = self.getCarName(car)
-            carName.gas = fuel_value
+            carName.fuel = fuel_value
 
     #gets the fuel for all cars for each line (puzzle)
     def getAllFuel(line):
@@ -98,7 +96,7 @@ class Board:
 
     def isMoveableRight(self, car):
         if car.isHorizontal():
-            last = car.getFullCarPosition()[car.carLength - 1]
+            last = car.ReturnAllCarPositions()[car.length - 1]
             if last[1] + 1 > 5 or self.matrix[last[0]][last[1] + 1] != ".":
                 print(last)
                 print("Cant move right a car might be blocking or it is out of bounds")
@@ -111,7 +109,7 @@ class Board:
 
     def isMoveableLeft(self, car):
         if car.isHorizontal():
-            first = car.startPos
+            first = car.startingPosition
             if first[1] - 1 < 0 or self.matrix[first[0]][first[1] - 1] != ".":
                 print("Cant move left a car might be blocking or it is out of bounds")
                 return False
@@ -123,7 +121,7 @@ class Board:
 
     def isMoveableUp(self, car):
         if car.isVertical():
-            first = car.startPos
+            first = car.startingPosition
             if first[0] - 1 < 0 and self.matrix[first[0] - 1][first[1]] != ".":
                 print("Cant move up a car might be blocking or it is out of bounds")
                 return False
@@ -135,7 +133,7 @@ class Board:
 
     def isMoveableDown(self, car):
         if car.isVertical():
-            last = car.getFullCarPosition()[car.carLength - 1]
+            last = car.ReturnAllCarPositions()[car.length - 1]
             if last[0] + 1 > 5 or self.matrix[last[0] + 1][last[1]] != ".":
                 print("Cant move down a car might be blocking or it is out of bounds")
                 return False
@@ -147,86 +145,102 @@ class Board:
 
     def moveRight(self, car):
         board = self.clone()
-        carNewBoard = board.getCarName(car.carName)
+        carNewBoard = board.getCarName(car.name)
         isMovable = self.isMoveableRight(car)
-        if isMovable:
-            fullCarPosition = carNewBoard.getFullCarPosition()
+        counter = -1
+        if isMovable and carNewBoard.hasFuel():
+            fullCarPosition = carNewBoard.ReturnAllCarPositions()
             board.matrix[fullCarPosition[0][0]][fullCarPosition[0][1]] = "."
-            board.matrix[fullCarPosition[-1][0]][fullCarPosition[-1][1] + 1] = car.carName
+            board.matrix[fullCarPosition[-1][0]][fullCarPosition[-1][1] + 1] = car.name
             newFullCarPosition = []
             for pos in fullCarPosition:
                 pos = (pos[0], pos[1] + 1)
                 newFullCarPosition.append(pos)
+                counter = counter + 1
             carNewBoard.setCarFullPosition(newFullCarPosition)
-            car.startPos = newFullCarPosition[0]
-            if carNewBoard.carFullPosition[car.carLength - 1][0] == 2 and \
-                    carNewBoard.carFullPosition[car.carLength - 1][1] == 5:
+            car.startingPosition = newFullCarPosition[0]
+            carNewBoard.useFuel(counter)
+            board.movedCar = carNewBoard.name
+            if carNewBoard.allCarPositions[car.length - 1][0] == 2 and \
+                    carNewBoard.allCarPositions[car.length - 1][1] == 5:
                 board.remove(carNewBoard)
                 board.cars.remove(carNewBoard)
-                print("Car is removed because it is the exit position ", carNewBoard.carName)
+                print("Car is removed because it is the exit position ", carNewBoard.name)
                 return board  # goal state
             return board
         else:
             return self
 
     def moveLeft(self, car):
+        board = self.clone()
+        carNewBoard = board.getCarName(car.name)
         isMovable = self.isMoveableLeft(car)
-        if isMovable:
-            board = self.clone()
-            carNewBoard = board.getCarName(car.carName)
-            fullCarPosition = carNewBoard.getFullCarPosition()
-            board.matrix[fullCarPosition[0][0]][fullCarPosition[0][1] - 1] = car.carName
+        counter = -1
+        if isMovable and car.hasFuel():
+            fullCarPosition = carNewBoard.ReturnAllCarPositions()
+            board.matrix[fullCarPosition[0][0]][fullCarPosition[0][1] - 1] = car.name
             board.matrix[fullCarPosition[-1][0]][fullCarPosition[-1][1]] = "."
             newFullCarPosition = []
             for pos in fullCarPosition:
                 pos = (pos[0], pos[1] - 1)
                 newFullCarPosition.append(pos)
+                counter += 1
             carNewBoard.setCarFullPosition(newFullCarPosition)
-            car.startPos = newFullCarPosition[0]
+            car.startingPosition = newFullCarPosition[0]
+            carNewBoard.hasFuel(counter)
+            board.movedCar = carNewBoard.name
             return board
         else:
             return self
 
     def moveUp(self, car):
+        board = self.clone()
+        carNewBoard = board.getCarName(car.name)
         isMovable = self.isMoveableUp(car)
-        if isMovable:
-            board = self.clone()
-            carNewBoard = board.getCarName(car.carName)
-            fullCarPosition = carNewBoard.getFullCarPosition()
-            board.matrix[fullCarPosition[0][0] - 1][fullCarPosition[0][1]] = car.carName
+        counter = -1
+        if isMovable and car.hasFuel():
+            fullCarPosition = carNewBoard.ReturnAllCarPositions()
+            board.matrix[fullCarPosition[0][0] - 1][fullCarPosition[0][1]] = car.name
             board.matrix[fullCarPosition[-1][0]][fullCarPosition[-1][1]] = "."
             newFullCarPosition = []
             for pos in fullCarPosition:
                 pos = (pos[0] - 1, pos[1])
                 newFullCarPosition.append(pos)
+                counter += 1
             carNewBoard.setCarFullPosition(newFullCarPosition)
             car.startPos = newFullCarPosition[0]
+            carNewBoard.useFuel(counter)
+            board.movedCar = carNewBoard.name
             return board
         else:
             return self
 
     def moveDown(self, car):
+        board = self.clone()
+        carNewBoard = board.getCarName(car.name)
         isMovable = self.isMoveableDown(car)
-        if isMovable:
-            board = self.clone()
-            carNewBoard = board.getCarName(car.carName)
-            fullCarPosition = carNewBoard.getFullCarPosition()
+        counter = -1
+        if isMovable and car.hasFuel():
+            fullCarPosition = carNewBoard.ReturnAllCarPositions()
             board.matrix[fullCarPosition[0][0]][fullCarPosition[0][1]] = "."
-            board.matrix[fullCarPosition[-1][0] + 1][fullCarPosition[-1][1]] = car.carName
+            board.matrix[fullCarPosition[-1][0] + 1][fullCarPosition[-1][1]] = car.name
             newFullCarPosition = []
             for pos in fullCarPosition:
                 pos = (pos[0] + 1, pos[1])
                 newFullCarPosition.append(pos)
+                counter += 1
             carNewBoard.setCarFullPosition(newFullCarPosition)
-            car.startPos = newFullCarPosition[0]
+            car.startingPosition = newFullCarPosition[0]
+            carNewBoard.useFuel(counter)
+            board.movedCar = carNewBoard.name
             return board
         else:
             return self
 
     def remove(self, car):
-        for i in range(len(car.getFullCarPosition())):
-            x = car.getFullCarPosition()[i][0]
-            y = car.getFullCarPosition()[i][1]
+        for i in range(len(car.ReturnAllCarPositions())):
+            x = car.ReturnAllCarPositions()[i][0]
+            y = car.ReturnAllCarPositions()[i][1]
             self.matrix[x][y] = "."
         return self
 
