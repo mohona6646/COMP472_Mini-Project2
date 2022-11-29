@@ -1,5 +1,9 @@
 from CarClass import Car
 import copy
+import numpy as np
+
+
+
 class Board:
 
     def __init__(self, puzzles):
@@ -9,7 +13,9 @@ class Board:
         self.cars = []
         self.parentsCar = {}
         self.MakingMatrix(puzzles)
+        self.createCars()
         self.movedCar = ""
+        self.makingString()
 
     def clone(self):
         boardCopy = copy.deepcopy(self)
@@ -98,11 +104,9 @@ class Board:
         if car.isHorizontal():
             last = car.ReturnAllCarPositions()[car.length - 1]
             if last[1] + 1 > 5 or self.matrix[last[0]][last[1] + 1] != ".":
-                print(last)
-                print("Cant move right a car might be blocking or it is out of bounds")
+                print("Cant move right a car might be blocking or it is out of bounds", car.name)
                 return False
             else:
-                # swap idk and change the fuel
                 return True
         print("Car is not horizontal!")
         return False
@@ -114,7 +118,6 @@ class Board:
                 print("Cant move left a car might be blocking or it is out of bounds")
                 return False
             else:
-                # swap idk and change the fuel
                 return True
         print("Car is not horizontal!")
         return False
@@ -122,11 +125,10 @@ class Board:
     def isMoveableUp(self, car):
         if car.isVertical():
             first = car.startingPosition
-            if first[0] - 1 < 0 and self.matrix[first[0] - 1][first[1]] != ".":
+            if first[0] - 1 < 0 or self.matrix[first[0] - 1][first[1]] != ".":
                 print("Cant move up a car might be blocking or it is out of bounds")
                 return False
             else:
-                # swap idk and change the fuel
                 return True
         print("Car is not vertical!")
         return False
@@ -138,7 +140,6 @@ class Board:
                 print("Cant move down a car might be blocking or it is out of bounds")
                 return False
             else:
-                # swap idk and change the fuel
                 return True
         print("Car is not vertical!")
         return False
@@ -187,7 +188,7 @@ class Board:
                 counter += 1
             carNewBoard.setCarFullPosition(newFullCarPosition)
             car.startingPosition = newFullCarPosition[0]
-            carNewBoard.hasFuel(counter)
+            carNewBoard.useFuel(counter)
             board.movedCar = carNewBoard.name
             return board
         else:
@@ -267,3 +268,21 @@ class Board:
             for x in range(6):
                 self.matrix[i][x] = puzzles[ctr]
                 ctr = ctr + 1
+
+    def makingString(self):
+        y = []
+        for i in range(6):
+            for x in range(6):
+                y.append(self.matrix[i][x])
+        return y
+
+    # for i in y:
+    #     #print(i, end="")
+
+    def compareTwoBoards(self, board):
+        y = self.cars
+        x = board.cars
+        for i in range(len(x)):
+            if x[i].ReturnAllCarPositions() != y[i].ReturnAllCarPositions():
+                return False
+        return True
