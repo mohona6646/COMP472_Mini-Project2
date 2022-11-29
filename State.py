@@ -34,17 +34,19 @@ class State:
                 nextCarName = board.getCarNameAtLocation(2, pos)
                 if not carList.__contains__(nextCarName) and nextCarName != ".":
                     cost += 1
-            cost *= 5  # 5 is set arbitrarily and should be adjusted after experimentation
+            cost *= 5
 
         #h4
 
         return cost
 
     def G_cost(self):
-        if self.parent.board is not None:
+        if self.parent is not None:
             parent = self.parent.board
             child = self.board
             if child.movedCar == parent.movedCar:
                 self.g_Cost = self.parent.g_Cost
             else:
                 self.g_Cost = self.parent.g_Cost + 1
+
+        return self.g_Cost
