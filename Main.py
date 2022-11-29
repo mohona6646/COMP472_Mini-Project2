@@ -1,3 +1,5 @@
+import re
+
 from Board import Board
 from UCS import UCS
 from State import State
@@ -55,3 +57,4 @@ soso.Solve(state)
 # board3 = board2.moveRight(board2.getCarName("F"))
 # board4 = board3.moveRight(board3.getCarName("F"))
 # print(board4.getCarName("F").fuel)
+
