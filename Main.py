@@ -1,3 +1,5 @@
+import re
+
 from Board import Board
 from UCS import UCS
 from State import State

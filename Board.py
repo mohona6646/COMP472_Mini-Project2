@@ -1,9 +1,8 @@
 from CarClass import Car
 import copy
 import numpy as np
-
-
 class Board:
+
     def __init__(self, puzzles):
         rows, columns = (6, 6)
         matrix = [[0 for x in range(rows)] for y in range(columns)]
@@ -43,6 +42,32 @@ class Board:
             fuel_value = int(fuel[1:])
             carName = self.getCarName(car)
             carName.fuel = fuel_value
+
+    #gets the fuel for all cars for each line (puzzle)
+    def getAllFuel(line):
+        keyLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
+                      'T', 'U', 'V', 'X', 'Y', 'Z']
+        dict = {key: None for key in keyLetters}
+        eachLine = [x for x in line]
+        str = ""
+        for character in range(len(eachLine)):
+            if eachLine[character].isdigit():
+                if not eachLine[character - 1].isdigit():
+                    tup = tuple(eachLine)
+                    keyDict = tup[character - 1]
+                str += eachLine[character]
+                if character != len(eachLine) - 1:
+                    if eachLine[character + 1].isdigit():
+                        continue
+                dict[keyDict] = str
+                str = ""
+        return dict
+
+    #gets the fuel of the specified car, given the puzzle
+    #can i just not put line and self in the parameters?
+    def getFuel(self,line,carName):
+        dict = self.getAllFuel(line)
+        return dict[carName]
 
     def getCarsInfo(self):
         info = {}
