@@ -14,25 +14,29 @@ class UCS:
         queue.put((node.state.G_cost(), node))
         explored = set()
         while not queue.empty():
-            print(queue)
+            print(queue.queue)
             node1 = queue.get()
             explored.add(node1)
+            print("----------closed list--------------------")
+            counter = 1
             for i in explored:
-                print("------------------------------")
                 i[1].state.board.matrixform()
+                print("-----------------Matrix ", counter, "--------------")
+                counter += 1
             print("\n")
+            print("----------closed list--------------------")
             if node1[1].state.board.getCarNameAtLocation(2, 5) != "A":
                 for x in node1[1].state.board.cars:
                     print("\n")
                     print(x.name)
                     if x.isVertical():
-                        if node1[1].state.board.isMoveableUp(x):
-                            y = node1[1].state.board.moveUp(x)
-                            state1 = State(None, node1[1].state.g_Cost, node1[1].state, y)
+                        boardup = node1[1].state.board
+                        print("----------move up---------------")
+                        while boardup.isMoveableUp(boardup.getCarName(x.name)):
+                            boardup = boardup.moveUp(boardup.getCarName(x.name))
+                            state1 = State(None, node1[1].state.g_Cost, node1[1].state, boardup)
                             child = Node(state1, 1, node1[1].state, node1[1].state.G_cost())
                             child.state.board.matrixform()
-                            # for i in child.state.board.cars:
-                            #     print(i.name,end="")
                             print('moved up', x.name)
                             isinopen = False
                             isinclosed = False
@@ -48,23 +52,15 @@ class UCS:
                                 print("Not added")
                             else:
                                 queue.put((child.state.G_cost(), child))
-                                # queue.put((child.state.G_cost(), child))
-
-                                # if child.state.board.makingString() not in nodes[
-                            #     1].state.board.makingString() and child.state.board.makingString() not in queue.queue:
-                            #     queue.put((child.state.G_cost(), child))
-                            #     explored.add(nodes)
-                            # elif child.state in queue.queue:
-                            #     holder = queue.get(child.state)
-                            #     if child.state.gCost < holder.state.gCost:
-                            #         queue.put(holder, holder.state.gCost)
-                        if node1[1].state.board.isMoveableDown(x):
-                            y = node1[1].state.board.moveDown(x)
-                            state1 = State(None, node1[1].state.g_Cost, node1[1].state, y)
+                        print("------------move up-------------")
+                        print("-------------------------")
+                        boarddown = node1[1].state.board
+                        while boarddown.isMoveableDown(boarddown.getCarName(x.name)):
+                            print("a7a")
+                            boarddown = boarddown.moveDown(boarddown.getCarName(x.name))
+                            state1 = State(None, node1[1].state.g_Cost, node1[1].state, boarddown)
                             child = Node(state1, 1, node1[1].state, node1[1].state.G_cost())
                             child.state.board.matrixform()
-                            # for i in child.state.board.cars:
-                            #     print(i.name, end="")
                             print('moved Down', x.name)
                             isinopen = False
                             isinclosed = False
@@ -80,28 +76,17 @@ class UCS:
                                 print("Not added")
                             else:
                                 queue.put((child.state.G_cost(), child))
-                            # if child.state.board.makingString() not in nodes[
-                            #     1].state.board.makingString() and child.state.board.makingString() not in queue.queue:
-                            #     queue.put((child.state.G_cost(), child))
-                            #     explored.add(nodes)
-                            # elif child.state in queue.queue:
-                            #     holder = queue.get(child.state)
-                            #     if child.state.gCost < holder.state.gCost:
-                            #         queue.put(holder, holder.state.gCost)
 
+                    print("-------------------------")
+                    print("-------------------------")
                     if x.isHorizontal():
-                        if node1[1].state.board.isMoveableRight(x):
-                            y = node1[1].state.board.moveRight(x)
-                            car = y.getCarName("A")
-                            state1 = State(None, node1[1].state.g_Cost, node1[1].state, y)
+                        boardright = node1[1].state.board
+                        while boardright.isMoveableRight(boardright.getCarName(x.name)):
+                            boardright = boardright.moveRight(boardright.getCarName(x.name))
+                            state1 = State(None, node1[1].state.g_Cost, node1[1].state, boardright)
                             child = Node(state1, 1, node1[1].state, node1[1].state.G_cost())
                             child.state.board.matrixform()
-                            # for i in child.state.board.cars:
-                            #     print(i.name, end="")
                             print('moved right', x.name)
-                            if car not in y.cars:
-                                queue.queue.clear()
-                                break
                             isinopen = False
                             isinclosed = False
                             for k in explored:
@@ -116,22 +101,23 @@ class UCS:
                                 print("Not added")
                             else:
                                 queue.put((child.state.G_cost(), child))
-                            # if child.state.board.makingString() not in nodes[
-                            #     1].state.board.makingString() and child.state.board.makingString() not in queue.queue:
-                            #     queue.put((child.state.G_cost(), child))
-                            #     explored.add(nodes)
-                            # elif child.state in queue.queue:
-                            #     holder = queue.get(child.state)
-                            #     if child.state.gCost < holder.state.gCost:
-                            #         queue.put(holder, holder.state.gCost)
-                        if node1[1].state.board.isMoveableLeft(x):
-                            y = node1[1].state.board.moveLeft(x)
-                            state1 = State(None, node1[1].state.g_Cost, node1[1].state, y)
+                            car = boardright.getCarName("A")
+                            if car not in boardright.cars:
+                                break
+
+                        if boardright.getCarName("A") not in boardright.cars:
+                            queue.queue.clear()
+                            break
+
+                        print("-------------------------")
+                        print("-------------------------")
+                        boardleft = node1[1].state.board
+                        while boardleft.isMoveableLeft(boardleft.getCarName(x.name)):
+                            boardleft = boardleft.moveLeft(boardleft.getCarName(x.name))
+                            state1 = State(None, node1[1].state.g_Cost, node1[1].state, boardleft)
                             child = Node(state1, 1, node1[1].state, node1[1].state.G_cost())
                             child.state.board.matrixform()
-                            # for i in child.state.board.cars:
-                            #     print(i.name,end="")
-                            print('moved left', x.name)
+                            print('moved right', x.name)
                             isinopen = False
                             isinclosed = False
                             for k in explored:
@@ -146,11 +132,7 @@ class UCS:
                                 print("Not added")
                             else:
                                 queue.put((child.state.G_cost(), child))
-                            # if child.state.board.makingString() not in nodes[
-                            #     1].state.board.makingString() and child.state.board.makingString() not in queue.queue:
-                            #     queue.put((child.state.G_cost(), child))
-                            #     explored.add(nodes)
-                            # elif child.state in queue.queue:
-                            #     holder = queue.get(child.state)
-                            #     if child.state.gCost < holder.state.gCost:
-                            #         queue.put(holder, holder.state.gCost)
+                        print("-------------------------")
+                        print("-------------------------")
+        print("LOSER")
+        return True
