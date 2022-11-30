@@ -34,24 +34,23 @@ class UCS:
                             # for i in child.state.board.cars:
                             #     print(i.name,end="")
                             print('moved up', x.name)
-                            isinopen=False
-                            isinclosed=False
+                            isinopen = False
+                            isinclosed = False
                             for k in explored:
                                 if k[1].state.board.compareTwoBoards(child.state.board):
-                                    isinclosed=True
+                                    isinclosed = True
                                     break
                             for k in queue.queue:
                                 if k[1].state.board.compareTwoBoards(child.state.board):
                                     isinopen = True
                                     break
                             if isinclosed or isinopen:
-                              print("Not added")
+                                print("Not added")
                             else:
                                 queue.put((child.state.G_cost(), child))
                                 # queue.put((child.state.G_cost(), child))
 
-
-                                    # if child.state.board.makingString() not in nodes[
+                                # if child.state.board.makingString() not in nodes[
                             #     1].state.board.makingString() and child.state.board.makingString() not in queue.queue:
                             #     queue.put((child.state.G_cost(), child))
                             #     explored.add(nodes)
@@ -126,7 +125,7 @@ class UCS:
                             #     if child.state.gCost < holder.state.gCost:
                             #         queue.put(holder, holder.state.gCost)
                         if node1[1].state.board.isMoveableLeft(x):
-                            y = state.board.moveLeft(x)
+                            y = node1[1].state.board.moveLeft(x)
                             state1 = State(None, node1[1].state.g_Cost, node1[1].state, y)
                             child = Node(state1, 1, node1[1].state, node1[1].state.G_cost())
                             child.state.board.matrixform()

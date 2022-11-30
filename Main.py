@@ -1,5 +1,3 @@
-import re
-
 from Board import Board
 from UCS import UCS
 from State import State
@@ -16,7 +14,7 @@ def ReadingFile(file):
 
 
 puzzles = ReadingFile("sample-input.txt")
-board = Board(puzzles[3])
+board = Board(puzzles[1])
 # for i in board.cars:
 #     print(i.name, end="")
 # print("")
