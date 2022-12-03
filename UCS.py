@@ -115,7 +115,7 @@ class UCS:
                                     isinopen = True
                                     break
                             if isinclosed or isinopen:
-                                 break
+                                break
                             else:
                                 queue.put((child.state.G_cost(), child))
                             if boardright.getCarName(x.name) not in boardright.cars:
@@ -141,6 +141,20 @@ class UCS:
                                 break
                             else:
                                 queue.put((child.state.G_cost(), child))
+        # only uncommented it if u need the search solution                         
+        # print("-----------SEARCH-------------")
+        # for i in explored:
+        #     counter = 1
+        #     if len(explored) != counter:
+        #         print(0, i[1].state.g_Cost, 0, i[1].state.board.makingString(), end="")
+        #         name = i[1].state.board.movedCar
+        #         counter += 1
+        #         for x in name:
+        #             fuel = i[1].state.board.getCarName(x)
+        #             if fuel is None:
+        #                 continue
+        #             print("", fuel.name, fuel.fuel, end="")
+        #         print("\n")
         if queue.empty():
             stop = timeit.default_timer()
             timing = stop - start

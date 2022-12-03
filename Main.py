@@ -52,7 +52,7 @@ def setAllFuel(line):
 
 
 puzzles = ReadingFile("sample-input.txt")
-solvepuzzle = puzzles[5]
+solvepuzzle = puzzles[0]
 board = setAllFuel(solvepuzzle)
 print("--------------------------------------------------------------------------------")
 print("Initial board configuration :", solvepuzzle)
