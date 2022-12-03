@@ -1,11 +1,8 @@
 from CarClass import Car
 import copy
-import numpy as np
-
 
 
 class Board:
-
     def __init__(self, puzzles):
         rows, columns = (6, 6)
         matrix = [[0 for x in range(rows)] for y in range(columns)]
@@ -39,39 +36,6 @@ class Board:
     def getCarNameAtLocation(self, x, y):
         return self.matrix[x][y]
 
-    def setFuelLevel(self, fuelValue):
-        for fuel in fuelValue:
-            car = fuel[0]
-            fuel_value = int(fuel[1:])
-            carName = self.getCarName(car)
-            carName.fuel = fuel_value
-
-    #gets the fuel for all cars for each line (puzzle)
-    def getAllFuel(line):
-        keyLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
-                      'T', 'U', 'V', 'X', 'Y', 'Z']
-        dict = {key: None for key in keyLetters}
-        eachLine = [x for x in line]
-        str = ""
-        for character in range(len(eachLine)):
-            if eachLine[character].isdigit():
-                if not eachLine[character - 1].isdigit():
-                    tup = tuple(eachLine)
-                    keyDict = tup[character - 1]
-                str += eachLine[character]
-                if character != len(eachLine) - 1:
-                    if eachLine[character + 1].isdigit():
-                        continue
-                dict[keyDict] = str
-                str = ""
-        return dict
-
-    #gets the fuel of the specified car, given the puzzle
-    #can i just not put line and self in the parameters?
-    def getFuel(self,line,carName):
-        dict = self.getAllFuel(line)
-        return dict[carName]
-
     def getCarsInfo(self):
         info = {}
         length = 0
@@ -103,52 +67,51 @@ class Board:
     def isMoveableRight(self, car):
         if car.isHorizontal():
             last = car.ReturnAllCarPositions()[car.length - 1]
-            if last[1] + 1 > 5 or self.matrix[last[0]][last[1] + 1] != ".":
-                print("Cant move right a car might be blocking or it is out of bounds", car.name)
+            if last[1] + 1 > 5:
+                return False
+            if self.matrix[last[0]][last[1] + 1] != ".":
                 return False
             else:
                 return True
-        print("Car is not horizontal!")
         return False
 
     def isMoveableLeft(self, car):
         if car.isHorizontal():
-            first = car.startingPosition
-            if first[1] - 1 < 0 or self.matrix[first[0]][first[1] - 1] != ".":
-                print("Cant move left a car might be blocking or it is out of bounds")
+            first = car.ReturnAllCarPositions()
+            if first[0][1] - 1 < 0:
+                return False
+            if self.matrix[first[0][0]][first[0][1] - 1] != ".":
                 return False
             else:
                 return True
-        print("Car is not horizontal!")
         return False
 
     def isMoveableUp(self, car):
         if car.isVertical():
-            first = car.startingPosition
-            if first[0] - 1 < 0 or self.matrix[first[0] - 1][first[1]] != ".":
-                print("Cant move up a car might be blocking or it is out of bounds")
+            first = car.ReturnAllCarPositions()
+            if first[0][0] - 1 < 0:
+                return False
+            if self.matrix[first[0][0] - 1][first[0][1]] != ".":
                 return False
             else:
                 return True
-        print("Car is not vertical!")
         return False
 
     def isMoveableDown(self, car):
         if car.isVertical():
             last = car.ReturnAllCarPositions()[car.length - 1]
-            if last[0] + 1 > 5 or self.matrix[last[0] + 1][last[1]] != ".":
-                print("Cant move down a car might be blocking or it is out of bounds")
+            if last[0] + 1 > 5:
+                return False
+            if self.matrix[last[0] + 1][last[1]] != ".":
                 return False
             else:
                 return True
-        print("Car is not vertical!")
         return False
 
     def moveRight(self, car):
         board = self.clone()
         carNewBoard = board.getCarName(car.name)
         isMovable = self.isMoveableRight(car)
-        counter = -1
         if isMovable and carNewBoard.hasFuel():
             fullCarPosition = carNewBoard.ReturnAllCarPositions()
             board.matrix[fullCarPosition[0][0]][fullCarPosition[0][1]] = "."
@@ -157,17 +120,16 @@ class Board:
             for pos in fullCarPosition:
                 pos = (pos[0], pos[1] + 1)
                 newFullCarPosition.append(pos)
-                counter = counter + 1
             carNewBoard.setCarFullPosition(newFullCarPosition)
             car.startingPosition = newFullCarPosition[0]
-            carNewBoard.useFuel(counter)
-            board.movedCar = carNewBoard.name
+            carNewBoard.useFuel(1)
+            if carNewBoard.name not in board.movedCar:
+                board.movedCar += carNewBoard.name
             if carNewBoard.allCarPositions[car.length - 1][0] == 2 and \
                     carNewBoard.allCarPositions[car.length - 1][1] == 5:
                 board.remove(carNewBoard)
                 board.cars.remove(carNewBoard)
-                print("Car is removed because it is the exit position ", carNewBoard.name)
-                return board  # goal state
+                return board
             return board
         else:
             return self
@@ -176,8 +138,7 @@ class Board:
         board = self.clone()
         carNewBoard = board.getCarName(car.name)
         isMovable = self.isMoveableLeft(car)
-        counter = -1
-        if isMovable and car.hasFuel():
+        if isMovable and carNewBoard.hasFuel():
             fullCarPosition = carNewBoard.ReturnAllCarPositions()
             board.matrix[fullCarPosition[0][0]][fullCarPosition[0][1] - 1] = car.name
             board.matrix[fullCarPosition[-1][0]][fullCarPosition[-1][1]] = "."
@@ -185,11 +146,11 @@ class Board:
             for pos in fullCarPosition:
                 pos = (pos[0], pos[1] - 1)
                 newFullCarPosition.append(pos)
-                counter += 1
             carNewBoard.setCarFullPosition(newFullCarPosition)
             car.startingPosition = newFullCarPosition[0]
-            carNewBoard.useFuel(counter)
-            board.movedCar = carNewBoard.name
+            carNewBoard.useFuel(1)
+            if carNewBoard.name not in board.movedCar:
+                board.movedCar += carNewBoard.name
             return board
         else:
             return self
@@ -198,8 +159,7 @@ class Board:
         board = self.clone()
         carNewBoard = board.getCarName(car.name)
         isMovable = self.isMoveableUp(car)
-        counter = -1
-        if isMovable and car.hasFuel():
+        if isMovable and carNewBoard.hasFuel():
             fullCarPosition = carNewBoard.ReturnAllCarPositions()
             board.matrix[fullCarPosition[0][0] - 1][fullCarPosition[0][1]] = car.name
             board.matrix[fullCarPosition[-1][0]][fullCarPosition[-1][1]] = "."
@@ -207,11 +167,11 @@ class Board:
             for pos in fullCarPosition:
                 pos = (pos[0] - 1, pos[1])
                 newFullCarPosition.append(pos)
-                counter += 1
             carNewBoard.setCarFullPosition(newFullCarPosition)
             car.startPos = newFullCarPosition[0]
-            carNewBoard.useFuel(counter)
-            board.movedCar = carNewBoard.name
+            carNewBoard.useFuel(1)
+            if carNewBoard.name not in board.movedCar:
+                board.movedCar += carNewBoard.name
             return board
         else:
             return self
@@ -220,8 +180,7 @@ class Board:
         board = self.clone()
         carNewBoard = board.getCarName(car.name)
         isMovable = self.isMoveableDown(car)
-        counter = -1
-        if isMovable and car.hasFuel():
+        if isMovable and carNewBoard.hasFuel():
             fullCarPosition = carNewBoard.ReturnAllCarPositions()
             board.matrix[fullCarPosition[0][0]][fullCarPosition[0][1]] = "."
             board.matrix[fullCarPosition[-1][0] + 1][fullCarPosition[-1][1]] = car.name
@@ -229,11 +188,11 @@ class Board:
             for pos in fullCarPosition:
                 pos = (pos[0] + 1, pos[1])
                 newFullCarPosition.append(pos)
-                counter += 1
             carNewBoard.setCarFullPosition(newFullCarPosition)
             car.startingPosition = newFullCarPosition[0]
-            carNewBoard.useFuel(counter)
-            board.movedCar = carNewBoard.name
+            carNewBoard.useFuel(1)
+            if carNewBoard.name not in board.movedCar:
+                board.movedCar += carNewBoard.name
             return board
         else:
             return self
@@ -259,7 +218,7 @@ class Board:
     def matrixform(self):
         for row in self.matrix:
             for col in row:
-                print(col, end=" ")
+                print(col, end="")
             print(" ")
 
     def MakingMatrix(self, puzzles):
@@ -270,14 +229,11 @@ class Board:
                 ctr = ctr + 1
 
     def makingString(self):
-        y = []
+        y = ""
         for i in range(6):
             for x in range(6):
-                y.append(self.matrix[i][x])
+                y = y + (self.matrix[i][x])
         return y
-
-    # for i in y:
-    #     #print(i, end="")
 
     def compareTwoBoards(self, board):
         y = self.cars
