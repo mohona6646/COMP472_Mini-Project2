@@ -44,3 +44,6 @@ class Car:
 
     def setCarFullPosition(self, pos):
         self.allCarPositions = pos
+
+    def __lt__(self, other):
+        return self.name < other.name

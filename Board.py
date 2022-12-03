@@ -1,6 +1,5 @@
 from CarClass import Car
 import copy
-import numpy as np
 
 
 class Board:
@@ -37,13 +36,6 @@ class Board:
     def getCarNameAtLocation(self, x, y):
         return self.matrix[x][y]
 
-    def setFuelLevel(self, fuelValue):
-        for fuel in fuelValue:
-            car = fuel[0]
-            fuel_value = int(fuel[1:])
-            carName = self.getCarName(car)
-            carName.fuel = fuel_value
-
     def getCarsInfo(self):
         info = {}
         length = 0
@@ -75,67 +67,45 @@ class Board:
     def isMoveableRight(self, car):
         if car.isHorizontal():
             last = car.ReturnAllCarPositions()[car.length - 1]
-            if last[1] + 1 > 5 or self.matrix[last[0]][last[1] + 1] != ".":
-                print("Cant move right a car might be blocking or it is out of bounds", car.name)
+            if last[1] + 1 > 5:
+                return False
+            if self.matrix[last[0]][last[1] + 1] != ".":
                 return False
             else:
                 return True
-        print("Car is not horizontal!")
         return False
 
     def isMoveableLeft(self, car):
         if car.isHorizontal():
             first = car.ReturnAllCarPositions()
-            if first[0][1] - 1 < 0 or self.matrix[first[0][0]][first[0][1] - 1] != ".":
-                print("Cant move left a car might be blocking or it is out of bounds")
+            if first[0][1] - 1 < 0:
+                return False
+            if self.matrix[first[0][0]][first[0][1] - 1] != ".":
                 return False
             else:
                 return True
-        print("Car is not horizontal!")
         return False
 
     def isMoveableUp(self, car):
         if car.isVertical():
             first = car.ReturnAllCarPositions()
             if first[0][0] - 1 < 0:
-                print("It is out of bounds")
                 return False
             if self.matrix[first[0][0] - 1][first[0][1]] != ".":
-                print("Cant move up a car might be blocking")
                 return False
             else:
                 return True
-        print("Car is not vertical!")
-        return False
-
-    def isMoveableDownenhnced(self, car,x):
-        if car.isVertical():
-            last = car.ReturnAllCarPositions()[car.length - 1]
-            if last[0] + x > 5:
-                print("It is out of bounds")
-                return False
-            if self.matrix[last[0] + 1][last[1]] != ".":
-                print(self.matrix[last[0] + x][last[1]])
-                print("Cant move down a car might be blocking")
-                return False
-            else:
-                return True
-        print("Car is not vertical!")
         return False
 
     def isMoveableDown(self, car):
         if car.isVertical():
             last = car.ReturnAllCarPositions()[car.length - 1]
             if last[0] + 1 > 5:
-                print("It is out of bounds")
                 return False
             if self.matrix[last[0] + 1][last[1]] != ".":
-                print(self.matrix[last[0] + 1][last[1]])
-                print("Cant move down a car might be blocking")
                 return False
             else:
                 return True
-        print("Car is not vertical!")
         return False
 
     def moveRight(self, car):
@@ -153,14 +123,13 @@ class Board:
             carNewBoard.setCarFullPosition(newFullCarPosition)
             car.startingPosition = newFullCarPosition[0]
             carNewBoard.useFuel(1)
-            print(carNewBoard.fuel)
-            board.movedCar = carNewBoard.name
+            if carNewBoard.name not in board.movedCar:
+                board.movedCar += carNewBoard.name
             if carNewBoard.allCarPositions[car.length - 1][0] == 2 and \
                     carNewBoard.allCarPositions[car.length - 1][1] == 5:
                 board.remove(carNewBoard)
                 board.cars.remove(carNewBoard)
-                print("Car is removed because it is the exit position ", carNewBoard.name)
-                return board  # goal state
+                return board
             return board
         else:
             return self
@@ -180,8 +149,8 @@ class Board:
             carNewBoard.setCarFullPosition(newFullCarPosition)
             car.startingPosition = newFullCarPosition[0]
             carNewBoard.useFuel(1)
-            print(carNewBoard.fuel)
-            board.movedCar = carNewBoard.name
+            if carNewBoard.name not in board.movedCar:
+                board.movedCar += carNewBoard.name
             return board
         else:
             return self
@@ -201,8 +170,8 @@ class Board:
             carNewBoard.setCarFullPosition(newFullCarPosition)
             car.startPos = newFullCarPosition[0]
             carNewBoard.useFuel(1)
-            print(carNewBoard.fuel)
-            board.movedCar = carNewBoard.name
+            if carNewBoard.name not in board.movedCar:
+                board.movedCar += carNewBoard.name
             return board
         else:
             return self
@@ -222,8 +191,8 @@ class Board:
             carNewBoard.setCarFullPosition(newFullCarPosition)
             car.startingPosition = newFullCarPosition[0]
             carNewBoard.useFuel(1)
-            print(carNewBoard.fuel)
-            board.movedCar = carNewBoard.name
+            if carNewBoard.name not in board.movedCar:
+                board.movedCar += carNewBoard.name
             return board
         else:
             return self
@@ -249,7 +218,7 @@ class Board:
     def matrixform(self):
         for row in self.matrix:
             for col in row:
-                print(col, end=" ")
+                print(col, end="")
             print(" ")
 
     def MakingMatrix(self, puzzles):
@@ -260,14 +229,11 @@ class Board:
                 ctr = ctr + 1
 
     def makingString(self):
-        y = []
+        y = ""
         for i in range(6):
             for x in range(6):
-                y.append(self.matrix[i][x])
+                y = y + (self.matrix[i][x])
         return y
-
-    # for i in y:
-    #     #print(i, end="")
 
     def compareTwoBoards(self, board):
         y = self.cars
