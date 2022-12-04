@@ -4,7 +4,7 @@ from State import State
 import timeit
 
 
-class AS:
+class AAS:
     def retracePath(self, state):
         path = []
         tempState = state
