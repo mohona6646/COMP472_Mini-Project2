@@ -50,12 +50,9 @@ class State:
             if car not in board.cars:
                 self.h_CostMe = 0
                 return 0
-            carPositions = car.ReturnAllCarPositions()
-            for pos in range(carPositions[-1][1] + 1, 6):
-                nextCarName = board.getCarNameAtLocation(2, pos)
-                if nextCarName != ".":
-                    cost += 1
-            cost *= 5
+            lastindex = car.allCarPositions[len(car.allCarPositions) - 1]
+            distancebetweencarandexit = 5 - lastindex[1]
+            cost = distancebetweencarandexit
         return cost
 
     def G_cost(self):

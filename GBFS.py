@@ -28,30 +28,30 @@ class GBFS:
         oldMatrix = state
         while not queue.empty() and solutionfound:
             if oldMatrix.board.isGoalPosition(oldMatrix.board.getCarName("A")):
-                path = self.retracePath(oldMatrix)
-                stop = timeit.default_timer()
-                timing = stop - start
-                print("Runtime: ", round(timing, 3), " seconds")
-                print("Search path length:", len(queue.queue), "states")
-                print("Solution path length:", len(path), "moves")
-                print("")
-                for i in range(len(path)):
-                    print(path[i].board.makingString(), end="")
-                    name = path[i].board.movedCar
-                    for x in name:
-                        fuel = path[i].board.getCarName(x)
-                        if fuel is None:
-                            continue
-                        print("", fuel.name, fuel.fuel, end="")
-                    print("\n")
-                    print("!", end=" ")
-                for name in oldMatrix.board.movedCar:
-                    car = oldMatrix.board.getCarName(name)
-                    if car is None:
-                        continue
-                    print(car.name, car.fuel, end=" ")
-                print("\n")
-                oldMatrix.board.matrixform()
+                # path = self.retracePath(oldMatrix)
+                # stop = timeit.default_timer()
+                # timing = stop - start
+                # print("Runtime: ", round(timing, 3), " seconds")
+                # print("Search path length:", len(queue.queue), "states")
+                # print("Solution path length:", len(path), "moves")
+                # print("")
+                # for i in range(len(path)):
+                #     print(path[i].board.makingString(), end="")
+                #     name = path[i].board.movedCar
+                #     for x in name:
+                #         fuel = path[i].board.getCarName(x)
+                #         if fuel is None:
+                #             continue
+                #         print("", fuel.name, fuel.fuel, end="")
+                #     print("\n")
+                #     print("!", end=" ")
+                # for name in oldMatrix.board.movedCar:
+                #     car = oldMatrix.board.getCarName(name)
+                #     if car is None:
+                #         continue
+                #     print(car.name, car.fuel, end=" ")
+                # print("\n")
+                # oldMatrix.board.matrixform()
                 break
             node1 = queue.get()
             explored.add(node1)
@@ -142,18 +142,18 @@ class GBFS:
                             else:
                                 queue.put((child.state.h_Cost(1, child.state.board), child))
         # print("-----------SEARCH-------------")
-        # for i in explored:
-        #     counter = 1
-        #     if len(explored) != counter:
-        #         print(0, 0, i[1].state.h_CostMe, i[1].state.board.makingString(), end="")
-        #         name = i[1].state.board.movedCar
-        #         counter += 1
-        #         for x in name:
-        #             fuel = i[1].state.board.getCarName(x)
-        #             if fuel is None:
-        #                 continue
-        #             print("", fuel.name, fuel.fuel, end="")
-        #         print("\n")
+        for i in explored:
+            counter = 1
+            if len(explored) != counter:
+                print(0, 0, i[1].state.h_CostMe, i[1].state.board.makingString(), end="")
+                name = i[1].state.board.movedCar
+                counter += 1
+                for x in name:
+                    fuel = i[1].state.board.getCarName(x)
+                    if fuel is None:
+                        continue
+                    print("", fuel.name, fuel.fuel, end="")
+                print("\n")
         if queue.empty():
             print("Sorry, could not solve the puzzle as specified.")
             print("Error: no solution found")

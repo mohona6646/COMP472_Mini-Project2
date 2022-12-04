@@ -51,9 +51,9 @@ def setAllFuel(line):
     return board
 
 
-puzzles = ReadingFile("sample-input.txt")
-for i in range(5):
-    print("----------------", i, "-------------")
+puzzles = ReadingFile("50PuzzlesInput.txt")
+for i in range(50):
+    print("----------------", i+1, "-------------")
     solvepuzzle = puzzles[i]
     board = setAllFuel(solvepuzzle)
     print("--------------------------------------------------------------------------------")
@@ -66,7 +66,7 @@ for i in range(5):
     for cars in board.cars:
         print(cars.name, ":", cars.fuel, ",", end=" ")
     print("")
-    heu = 1
+    heu = 4
     # heu = 2
     # heu = 3
     # heu = 4
