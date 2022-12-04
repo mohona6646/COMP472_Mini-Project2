@@ -2,7 +2,7 @@ from Board import Board
 from UCS import UCS
 from State import State
 from GBFS import GBFS
-from AAndAStartPathFinding import AS
+from AAlog import AAS
 
 
 def ReadingFile(file):
@@ -52,19 +52,27 @@ def setAllFuel(line):
 
 
 puzzles = ReadingFile("sample-input.txt")
-solvepuzzle = puzzles[0]
-board = setAllFuel(solvepuzzle)
-print("--------------------------------------------------------------------------------")
-print("Initial board configuration :", solvepuzzle)
-print()
-print("!")
-board.matrixform()
-print("")
-print("Car fuel available: ", end="")
-for i in board.cars:
-    print(i.name, ":", i.fuel, ",", end=" ")
-print("")
-state = State(1, 0, None, board)
-soso = UCS()
-soso.Solve(state)
-print("--------------------------------------------------------------------------------")
+for i in range(5):
+    print("----------------", i, "-------------")
+    solvepuzzle = puzzles[i]
+    board = setAllFuel(solvepuzzle)
+    print("--------------------------------------------------------------------------------")
+    print("Initial board configuration :", solvepuzzle)
+    print()
+    print("!")
+    board.matrixform()
+    print("")
+    print("Car fuel available: ", end="")
+    for cars in board.cars:
+        print(cars.name, ":", cars.fuel, ",", end=" ")
+    print("")
+    heu = 1
+    # heu = 2
+    # heu = 3
+    # heu = 4
+    state = State(heu, 0, None, board)
+    # path=GBFS()
+    # path=UCS()
+    path = AAS()
+    path.Solve(state, heu)
+    print("--------------------------------------------------------------------------------")

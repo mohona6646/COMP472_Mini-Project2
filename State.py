@@ -76,4 +76,6 @@ class State:
             cost = self.h_Cost(2, self.board) + self.G_cost()
         if self.h_CostMe == 3:
             cost = self.h_Cost(3, self.board) + self.G_cost()
+        if self.h_CostMe == 4:
+            cost = self.h_Cost(4, self.board) + self.G_cost()
         return cost

@@ -18,9 +18,9 @@ class GBFS:
         path.reverse()
         return path
 
-    def Solve(self, state):
+    def Solve(self, state,heu):
         start = timeit.default_timer()
-        node = Node(state, None, None, 0)
+        node = Node(state, None, 0)
         queue = PriorityQueue()
         queue.put((node.state.h_CostMe, node))
         explored = set()
@@ -61,8 +61,8 @@ class GBFS:
                         boardup = node1[1].state.board
                         while boardup.isMoveableUp(boardup.getCarName(x.name)) and boardup.getCarName(x.name).hasFuel():
                             boardup = boardup.moveUp(boardup.getCarName(x.name))
-                            state1 = State(1, None, node1[1].state, boardup)
-                            child = Node(state1, 1, node1[1].state, state1.h_CostMe)
+                            state1 = State(heu, 0, node1[1].state, boardup)
+                            child = Node(state1, node1[1].state, state1.h_CostMe)
                             isinopen = False
                             isinclosed = False
                             for k in explored:
@@ -81,8 +81,8 @@ class GBFS:
                         while boarddown.isMoveableDown(boarddown.getCarName(x.name)) and boarddown.getCarName(
                                 x.name).hasFuel():
                             boarddown = boarddown.moveDown(boarddown.getCarName(x.name))
-                            state1 = State(1, None, node1[1].state, boarddown)
-                            child = Node(state1, 1, node1[1].state, state1.h_CostMe)
+                            state1 = State(heu, 0, node1[1].state, boarddown)
+                            child = Node(state1, node1[1].state, state1.h_CostMe)
                             isinopen = False
                             isinclosed = False
                             for k in explored:
@@ -102,8 +102,8 @@ class GBFS:
                         while boardright.isMoveableRight(boardright.getCarName(x.name)) and boardright.getCarName(
                                 x.name).hasFuel():
                             boardright = boardright.moveRight(boardright.getCarName(x.name))
-                            state1 = State(1, None, node1[1].state, boardright)
-                            child = Node(state1, 1, node1[1].state, state1.h_CostMe)
+                            state1 = State(heu, 0, node1[1].state, boardright)
+                            child = Node(state1, node1[1].state, state1.h_CostMe)
                             isinopen = False
                             isinclosed = False
                             for k in explored:
@@ -125,8 +125,8 @@ class GBFS:
                         while boardleft.isMoveableLeft(boardleft.getCarName(x.name)) and boardleft.getCarName(
                                 x.name).hasFuel():
                             boardleft = boardleft.moveLeft(boardleft.getCarName(x.name))
-                            state1 = State(1, None, node1[1].state, boardleft)
-                            child = Node(state1, 1, node1[1].state, state1.h_CostMe)
+                            state1 = State(heu, 0, node1[1].state, boardleft)
+                            child = Node(state1,  node1[1].state, state1.h_CostMe)
                             isinopen = False
                             isinclosed = False
                             for k in explored:
@@ -141,6 +141,19 @@ class GBFS:
                                 break
                             else:
                                 queue.put((child.state.h_Cost(1, child.state.board), child))
+        # print("-----------SEARCH-------------")
+        # for i in explored:
+        #     counter = 1
+        #     if len(explored) != counter:
+        #         print(0, 0, i[1].state.h_CostMe, i[1].state.board.makingString(), end="")
+        #         name = i[1].state.board.movedCar
+        #         counter += 1
+        #         for x in name:
+        #             fuel = i[1].state.board.getCarName(x)
+        #             if fuel is None:
+        #                 continue
+        #             print("", fuel.name, fuel.fuel, end="")
+        #         print("\n")
         if queue.empty():
             print("Sorry, could not solve the puzzle as specified.")
             print("Error: no solution found")

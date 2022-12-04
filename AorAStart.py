@@ -4,7 +4,7 @@ from State import State
 import timeit
 
 
-class AS:
+class AAS:
     def retracePath(self, state):
         path = []
         tempState = state
@@ -14,9 +14,9 @@ class AS:
         path.reverse()
         return path
 
-    def Solve(self, state, heu):
+    def Solve(self, state):
         start = timeit.default_timer()
-        node = Node(state,None, 0)
+        node = Node(state, None, None, 0)
         queue = PriorityQueue()
         queue.put((node.state.fCost, node))
         explored = set()
@@ -58,8 +58,8 @@ class AS:
                         boardup = node1[1].state.board
                         while boardup.isMoveableUp(boardup.getCarName(x.name)) and boardup.getCarName(x.name).hasFuel():
                             boardup = boardup.moveUp(boardup.getCarName(x.name))
-                            state1 = State(heu, node1[1].state.G_cost(), node1[1].state, boardup)
-                            child = Node(state1, node1[1].state, state1.fCost)
+                            state1 = State(1, 1, node1[1].state, boardup)
+                            child = Node(state1, 1, node1[1].state, state1.fCost)
                             isinopen = False
                             isinclosed = False
                             for k in explored:
@@ -78,8 +78,8 @@ class AS:
                         while boarddown.isMoveableDown(boarddown.getCarName(x.name)) and boarddown.getCarName(
                                 x.name).hasFuel():
                             boarddown = boarddown.moveDown(boarddown.getCarName(x.name))
-                            state1 = State(heu, node1[1].state.G_cost(), node1[1].state, boarddown)
-                            child = Node(state1,node1[1].state, state1.fCost)
+                            state1 = State(1, 1, node1[1].state, boarddown)
+                            child = Node(state1, 1, node1[1].state, state1.fCost)
                             isinopen = False
                             isinclosed = False
                             for k in explored:
@@ -99,8 +99,8 @@ class AS:
                         while boardright.isMoveableRight(boardright.getCarName(x.name)) and boardright.getCarName(
                                 x.name).hasFuel():
                             boardright = boardright.moveRight(boardright.getCarName(x.name))
-                            state1 = State(heu, node1[1].state.G_cost(), node1[1].state, boardright)
-                            child = Node(state1, node1[1].state, state1.fCost)
+                            state1 = State(1, 1, node1[1].state, boardright)
+                            child = Node(state1, 1, node1[1].state, state1.fCost)
                             isinopen = False
                             isinclosed = False
                             for k in explored:
@@ -122,8 +122,8 @@ class AS:
                         while boardleft.isMoveableLeft(boardleft.getCarName(x.name)) and boardleft.getCarName(
                                 x.name).hasFuel():
                             boardleft = boardleft.moveLeft(boardleft.getCarName(x.name))
-                            state1 = State(heu, node1[1].state.G_cost(), node1[1].state, boardleft)
-                            child = Node(state1, node1[1].state, state1.fCost)
+                            state1 = State(1, 1, node1[1].state, boardleft)
+                            child = Node(state1, 1, node1[1].state, state1.fCost)
                             isinopen = False
                             isinclosed = False
                             for k in explored:
@@ -138,19 +138,6 @@ class AS:
                                 break
                             else:
                                 queue.put((child.state.fCost, child))
-        # print("-----------SEARCH-------------")
-        # for i in explored:
-        #     counter = 1
-        #     if len(explored) != counter:
-        #         print(i[1].state.fCost, i[1].state.g_Cost, i[1].state.h_CostMe, i[1].state.board.makingString(), end="")
-        #         name = i[1].state.board.movedCar
-        #         counter += 1
-        #         for x in name:
-        #             fuel = i[1].state.board.getCarName(x)
-        #             if fuel is None:
-        #                 continue
-        #             print("", fuel.name, fuel.fuel, end="")
-        #         print("\n")
         if queue.empty():
             stop = timeit.default_timer()
             timing = stop - start
