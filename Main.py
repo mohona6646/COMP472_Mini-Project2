@@ -2,7 +2,7 @@ from Board import Board
 from UCS import UCS
 from State import State
 from GBFS import GBFS
-from AAndAStartPathFinding import AS
+from AAlog import AAS
 
 
 def ReadingFile(file):
@@ -73,6 +73,6 @@ for i in range(5):
     state = State(heu, 0, None, board)
     # path=GBFS()
     # path=UCS()
-    path = AS()
+    path = AAS()
     path.Solve(state, heu)
     print("--------------------------------------------------------------------------------")
