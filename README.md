@@ -16,4 +16,4 @@ $~~~~~~~~~~~~~~~~~~$ **Rush Hour Game**
 
 - To run the the .py files, first add the files in your IDE. Then run it on an python environment. Make sure that you download the sample-input.txt and 50PuzzlesInput.txt in the same project directory so it can access the file.
 
-- To run each algorithm and heuristic, simply uncomment the line of the heuristic or algorithm you wish to test. 
+- To run each algorithm and heuristic, simply uncomment the line of the heuristic or algorithm you wish to test from the main.py class. 
