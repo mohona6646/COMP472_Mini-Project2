@@ -20,7 +20,7 @@ class UCS:
 
     def Solve(self, state):
         start = timeit.default_timer()
-        node = Node(state, None, None, 0)
+        node = Node(state, None, 0)
         queue = PriorityQueue()
         queue.put((node.state.G_cost(), node))
         explored = set()
@@ -61,8 +61,8 @@ class UCS:
                         boardup = node1[1].state.board
                         while boardup.isMoveableUp(boardup.getCarName(x.name)) and boardup.getCarName(x.name).hasFuel():
                             boardup = boardup.moveUp(boardup.getCarName(x.name))
-                            state1 = State(None, node1[1].state.g_Cost, node1[1].state, boardup)
-                            child = Node(state1, 1, node1[1].state, node1[1].state.G_cost())
+                            state1 = State(None, node1[1].state.G_cost(), node1[1].state, boardup)
+                            child = Node(state1, node1[1].state, node1[1].state.G_cost())
                             isinopen = False
                             isinclosed = False
                             for k in explored:
@@ -81,8 +81,8 @@ class UCS:
                         while boarddown.isMoveableDown(boarddown.getCarName(x.name)) and boarddown.getCarName(
                                 x.name).hasFuel():
                             boarddown = boarddown.moveDown(boarddown.getCarName(x.name))
-                            state1 = State(None, node1[1].state.g_Cost, node1[1].state, boarddown)
-                            child = Node(state1, 1, node1[1].state, node1[1].state.G_cost())
+                            state1 = State(None, node1[1].state.G_cost(), node1[1].state, boarddown)
+                            child = Node(state1, node1[1].state, node1[1].state.G_cost())
                             isinopen = False
                             isinclosed = False
                             for k in explored:
@@ -102,8 +102,8 @@ class UCS:
                         while boardright.isMoveableRight(boardright.getCarName(x.name)) and boardright.getCarName(
                                 x.name).hasFuel():
                             boardright = boardright.moveRight(boardright.getCarName(x.name))
-                            state1 = State(None, node1[1].state.g_Cost, node1[1].state, boardright)
-                            child = Node(state1, 1, node1[1].state, node1[1].state.G_cost())
+                            state1 = State(None, node1[1].state.G_cost(), node1[1].state, boardright)
+                            child = Node(state1, node1[1].state, node1[1].state.G_cost())
                             isinopen = False
                             isinclosed = False
                             for k in explored:
@@ -125,8 +125,8 @@ class UCS:
                         while boardleft.isMoveableLeft(boardleft.getCarName(x.name)) and boardleft.getCarName(
                                 x.name).hasFuel():
                             boardleft = boardleft.moveLeft(boardleft.getCarName(x.name))
-                            state1 = State(None, node1[1].state.g_Cost, node1[1].state, boardleft)
-                            child = Node(state1, 1, node1[1].state, node1[1].state.G_cost())
+                            state1 = State(None, node1[1].state.G_cost(), node1[1].state, boardleft)
+                            child = Node(state1, node1[1].state, node1[1].state.G_cost())
                             isinopen = False
                             isinclosed = False
                             for k in explored:
@@ -141,7 +141,7 @@ class UCS:
                                 break
                             else:
                                 queue.put((child.state.G_cost(), child))
-        # only uncommented it if u need the search solution                         
+        # only uncommented it if u need the search solution
         # print("-----------SEARCH-------------")
         # for i in explored:
         #     counter = 1

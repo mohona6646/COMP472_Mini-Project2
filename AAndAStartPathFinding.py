@@ -1,14 +1,10 @@
+from queue import PriorityQueue
 from Node import Node
 from State import State
-from queue import PriorityQueue
 import timeit
 
 
-class GBFS:
-
-    def __init__(self):
-        self.matrix = None
-
+class AS:
     def retracePath(self, state):
         path = []
         tempState = state
@@ -18,14 +14,15 @@ class GBFS:
         path.reverse()
         return path
 
-    def Solve(self, state,heu):
+    def Solve(self, state, heu):
         start = timeit.default_timer()
-        node = Node(state, None, 0)
+        node = Node(state,None, 0)
         queue = PriorityQueue()
-        queue.put((node.state.h_CostMe, node))
+        queue.put((node.state.fCost, node))
         explored = set()
         solutionfound = True
         oldMatrix = state
+        print("")
         while not queue.empty() and solutionfound:
             if oldMatrix.board.isGoalPosition(oldMatrix.board.getCarName("A")):
                 path = self.retracePath(oldMatrix)
@@ -44,7 +41,7 @@ class GBFS:
                             continue
                         print("", fuel.name, fuel.fuel, end="")
                     print("\n")
-                    print("!", end=" ")
+                print("!", end=" ")
                 for name in oldMatrix.board.movedCar:
                     car = oldMatrix.board.getCarName(name)
                     if car is None:
@@ -61,8 +58,8 @@ class GBFS:
                         boardup = node1[1].state.board
                         while boardup.isMoveableUp(boardup.getCarName(x.name)) and boardup.getCarName(x.name).hasFuel():
                             boardup = boardup.moveUp(boardup.getCarName(x.name))
-                            state1 = State(heu, 0, node1[1].state, boardup)
-                            child = Node(state1, node1[1].state, state1.h_CostMe)
+                            state1 = State(heu, node1[1].state.G_cost(), node1[1].state, boardup)
+                            child = Node(state1, node1[1].state, state1.fCost)
                             isinopen = False
                             isinclosed = False
                             for k in explored:
@@ -76,13 +73,13 @@ class GBFS:
                             if isinclosed or isinopen:
                                 break
                             else:
-                                queue.put((child.state.h_Cost(1, child.state.board), child))
+                                queue.put((child.state.fCost, child))
                         boarddown = node1[1].state.board
                         while boarddown.isMoveableDown(boarddown.getCarName(x.name)) and boarddown.getCarName(
                                 x.name).hasFuel():
                             boarddown = boarddown.moveDown(boarddown.getCarName(x.name))
-                            state1 = State(heu, 0, node1[1].state, boarddown)
-                            child = Node(state1, node1[1].state, state1.h_CostMe)
+                            state1 = State(heu, node1[1].state.G_cost(), node1[1].state, boarddown)
+                            child = Node(state1,node1[1].state, state1.fCost)
                             isinopen = False
                             isinclosed = False
                             for k in explored:
@@ -96,14 +93,14 @@ class GBFS:
                             if isinclosed or isinopen:
                                 break
                             else:
-                                queue.put((child.state.h_Cost(1, child.state.board), child))
+                                queue.put((child.state.fCost, child))
                     if x.isHorizontal():
                         boardright = node1[1].state.board
                         while boardright.isMoveableRight(boardright.getCarName(x.name)) and boardright.getCarName(
                                 x.name).hasFuel():
                             boardright = boardright.moveRight(boardright.getCarName(x.name))
-                            state1 = State(heu, 0, node1[1].state, boardright)
-                            child = Node(state1, node1[1].state, state1.h_CostMe)
+                            state1 = State(heu, node1[1].state.G_cost(), node1[1].state, boardright)
+                            child = Node(state1, node1[1].state, state1.fCost)
                             isinopen = False
                             isinclosed = False
                             for k in explored:
@@ -117,7 +114,7 @@ class GBFS:
                             if isinclosed or isinopen:
                                 break
                             else:
-                                queue.put((child.state.h_Cost(1, child.state.board), child))
+                                queue.put((child.state.fCost, child))
                             if boardright.getCarName(x.name) not in boardright.cars:
                                 oldMatrix = state1
                                 break
@@ -125,8 +122,8 @@ class GBFS:
                         while boardleft.isMoveableLeft(boardleft.getCarName(x.name)) and boardleft.getCarName(
                                 x.name).hasFuel():
                             boardleft = boardleft.moveLeft(boardleft.getCarName(x.name))
-                            state1 = State(heu, 0, node1[1].state, boardleft)
-                            child = Node(state1,  node1[1].state, state1.h_CostMe)
+                            state1 = State(heu, node1[1].state.G_cost(), node1[1].state, boardleft)
+                            child = Node(state1, node1[1].state, state1.fCost)
                             isinopen = False
                             isinclosed = False
                             for k in explored:
@@ -140,12 +137,12 @@ class GBFS:
                             if isinclosed or isinopen:
                                 break
                             else:
-                                queue.put((child.state.h_Cost(1, child.state.board), child))
+                                queue.put((child.state.fCost, child))
         # print("-----------SEARCH-------------")
         # for i in explored:
         #     counter = 1
         #     if len(explored) != counter:
-        #         print(0, 0, i[1].state.h_CostMe, i[1].state.board.makingString(), end="")
+        #         print(i[1].state.fCost, i[1].state.g_Cost, i[1].state.h_CostMe, i[1].state.board.makingString(), end="")
         #         name = i[1].state.board.movedCar
         #         counter += 1
         #         for x in name:
@@ -155,8 +152,10 @@ class GBFS:
         #             print("", fuel.name, fuel.fuel, end="")
         #         print("\n")
         if queue.empty():
-            print("Sorry, could not solve the puzzle as specified.")
-            print("Error: no solution found")
             stop = timeit.default_timer()
             timing = stop - start
+            print("")
+            print("Sorry, could not solve the puzzle as specified.")
+            print("Error: no solution found")
+            print("")
             print("Runtime: ", round(timing, 3), " seconds")
