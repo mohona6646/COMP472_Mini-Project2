@@ -65,6 +65,6 @@ for i in board.cars:
     print(i.name, ":", i.fuel, ",", end=" ")
 print("")
 state = State(1, 0, None, board)
-soso = UCS()
-soso.Solve(state)
+path = UCS()
+path.Solve(state)
 print("--------------------------------------------------------------------------------")
